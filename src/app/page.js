@@ -1,11 +1,13 @@
 "use client"
 import { useEffect, useState } from "react";
 import empanada from "./empandas";
+import { Tiro_Tamil } from "next/font/google";
 
 export default function Home() {
   let [empanadas, setEmpanadas] = useState([]);
   let [sabor, setSabor] = useState('');
   let [cantidad, setCantidad] = useState(0);
+  let [total, setTotal] = useState(0);
 
   const renderizarEmpanadas = () => (
     <table className="w-full border-collapse border border-gray-600">
@@ -28,10 +30,28 @@ export default function Home() {
     </table>
   );
 
+  const data = () => {
+    return (
+      <table className="w-20 h-20 m-10 border-collapse border border-gray-600">
+        <thead>
+          <tr className="bg-gray-800 text-white">
+            <th className="p-2">Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="text-center">
+            <td className="p-2 cursor-pointer">{total}</td>
+          </tr>
+        </tbody>
+      </table>
+    )
+  }
+
   const handleEmpanada = () => {
     const nuevaEmpanada = new empanada(sabor, cantidad);
     const empanadaExistente = empanadas.find((e) => e.obtenerSabor() === sabor);
-
+    let q = parseInt(total, 10) + parseInt(cantidad, 10)
+    setTotal(q)
     if (empanadaExistente) {
       // Clonar el array y actualizar la cantidad en la empanada existente
       setEmpanadas((prevEmpanadas) => {
@@ -100,17 +120,19 @@ export default function Home() {
           className="bg-gray-900 w-40 m-4 h-10 text-white"
           onClick={() => handleEmpanada()}
         >Agregar</button>
-        <div>
-          <p>Listado de empanadas</p>
-          {empanadas.length > 0 ? (
-            <div className="bg-gray-700 w-96 max-h-screen p-10 overflow-auto">
-              {renderizarEmpanadas()}
-            </div>
-          ) : (
-            <div>
-              <p>No hay empanadas en el listado</p>
-            </div>
-          )}
+        <div className="flex items-center flex-col justify-center">
+          <div className="flex flex-row ">
+            {empanadas.length > 0 ? (
+              <div className="bg-gray-700 w-96 max-h-screen p-10 overflow-auto">
+                {renderizarEmpanadas()}
+              </div>
+            ) : (
+              <div>
+                <p>No hay empanadas en el listado</p>
+              </div>
+            )}
+            {empanadas.length > 0 ? data() : null}
+          </div>
         </div>
       </div>
     </main>
